@@ -31,7 +31,7 @@ BEGIN
   VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name');
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
@@ -209,7 +209,8 @@ CREATE TABLE email_log (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- No RLS needed - internal audit table, accessed only via service role
+ALTER TABLE email_log ENABLE ROW LEVEL SECURITY;
+-- Only accessible via service role (no user-facing policies)
 
 -- ============================================
 -- SEED: Default Questions
@@ -236,7 +237,7 @@ BEGIN
   NEW.updated_at = now();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public;
 
 CREATE TRIGGER update_candidates_updated_at BEFORE UPDATE ON candidates FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_referees_updated_at BEFORE UPDATE ON referees FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
