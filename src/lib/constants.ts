@@ -17,23 +17,23 @@ export const FREE_EMAIL_DOMAINS = [
 ];
 
 export const CANDIDATE_STATUSES = {
-  pending: { label: "Pending", color: "bg-yellow-100 text-yellow-800" },
-  invited: { label: "Invited", color: "bg-blue-100 text-blue-800" },
-  submitted: { label: "Submitted", color: "bg-purple-100 text-purple-800" },
-  completed: { label: "Completed", color: "bg-green-100 text-green-800" },
-  expired: { label: "Expired", color: "bg-gray-100 text-gray-800" },
+  pending: { label: "Pending", color: "bg-yellow-400/15 text-yellow-400" },
+  invited: { label: "Invited", color: "bg-blue-400/15 text-blue-400" },
+  submitted: { label: "Submitted", color: "bg-purple-400/15 text-purple-400" },
+  completed: { label: "Completed", color: "bg-primary/15 text-primary" },
+  expired: { label: "Expired", color: "bg-white/10 text-white/40" },
 } as const;
 
 export const REFEREE_STATUSES = {
-  pending: { label: "Pending", color: "bg-yellow-100 text-yellow-800" },
-  email_sent: { label: "Email Sent", color: "bg-blue-100 text-blue-800" },
+  pending: { label: "Pending", color: "bg-yellow-400/15 text-yellow-400" },
+  email_sent: { label: "Email Sent", color: "bg-blue-400/15 text-blue-400" },
   in_progress: {
     label: "In Progress",
-    color: "bg-purple-100 text-purple-800",
+    color: "bg-purple-400/15 text-purple-400",
   },
-  completed: { label: "Completed", color: "bg-green-100 text-green-800" },
-  declined: { label: "Declined", color: "bg-red-100 text-red-800" },
-  expired: { label: "Expired", color: "bg-gray-100 text-gray-800" },
+  completed: { label: "Completed", color: "bg-primary/15 text-primary" },
+  declined: { label: "Declined", color: "bg-red-400/15 text-red-400" },
+  expired: { label: "Expired", color: "bg-white/10 text-white/40" },
 } as const;
 
 export const FRAUD_SEVERITY_WEIGHTS = {
@@ -44,10 +44,10 @@ export const FRAUD_SEVERITY_WEIGHTS = {
 } as const;
 
 export const FRAUD_SEVERITY_COLORS = {
-  low: "bg-yellow-100 text-yellow-800",
-  medium: "bg-orange-100 text-orange-800",
-  high: "bg-red-100 text-red-800",
-  critical: "bg-red-200 text-red-900",
+  low: "bg-yellow-400/15 text-yellow-400",
+  medium: "bg-orange-400/15 text-orange-400",
+  high: "bg-red-400/15 text-red-400",
+  critical: "bg-red-500/20 text-red-300",
 } as const;
 
 export const DEFAULT_QUESTIONS = [

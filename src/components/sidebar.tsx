@@ -9,10 +9,8 @@ import {
   FileText,
   Settings,
   LogOut,
-  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -33,15 +31,17 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="w-64 border-r bg-card flex flex-col h-full">
-      <div className="p-6 border-b">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold">VeReference</span>
+    <aside className="w-60 flex flex-col h-full" style={{ background: "var(--sidebar)" }}>
+      <div className="px-6 py-7">
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+            <span className="text-primary-foreground font-bold text-sm">V</span>
+          </div>
+          <span className="text-base font-bold tracking-tight text-foreground">VeriFrence</span>
         </Link>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 px-3 space-y-0.5">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
@@ -49,28 +49,27 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-white/10 text-white"
+                  : "text-white/50 hover:bg-white/5 hover:text-white/80"
               )}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className={cn("h-4 w-4 flex-shrink-0", isActive ? "text-primary" : "")} />
               {item.label}
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t">
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-3 text-muted-foreground"
+      <div className="px-3 py-4 border-t border-white/6">
+        <button
           onClick={handleSignOut}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/40 hover:text-white/70 hover:bg-white/5 transition-all duration-150 w-full"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4 flex-shrink-0" />
           Sign Out
-        </Button>
+        </button>
       </div>
     </aside>
   );
