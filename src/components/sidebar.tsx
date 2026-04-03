@@ -37,7 +37,7 @@ export function Sidebar() {
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
             <span className="text-primary-foreground font-bold text-sm">V</span>
           </div>
-          <span className="text-base font-bold tracking-tight text-foreground">VeriFrence</span>
+          <span className="text-base font-bold tracking-tight text-foreground">VeReference</span>
         </Link>
       </div>
 

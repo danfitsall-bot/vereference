@@ -67,7 +67,7 @@ export default function LoginPage() {
           <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center mb-4">
             <span className="text-primary-foreground font-bold text-xl">V</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">VeriFrence</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">VeReference</h1>
           <p className="text-sm text-muted-foreground mt-1">AI-Powered Reference Verification</p>
         </div>
 
