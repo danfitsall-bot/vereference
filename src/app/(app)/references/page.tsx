@@ -12,6 +12,7 @@ export default async function ReferencesPage() {
   const { data: referees } = await supabase
     .from("referees")
     .select("*, candidates!inner(full_name, position_applied)")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   return (

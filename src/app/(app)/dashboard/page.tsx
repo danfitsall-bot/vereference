@@ -10,27 +10,32 @@ export default async function DashboardPage() {
 
   const { count: candidateCount } = await supabase
     .from("candidates")
-    .select("*", { count: "exact", head: true });
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id);
 
   const { count: completedCount } = await supabase
     .from("candidates")
     .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id)
     .eq("status", "completed");
 
   const { count: pendingRefCount } = await supabase
     .from("referees")
     .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id)
     .in("status", ["pending", "email_sent"]);
 
   const { count: fraudCount } = await supabase
     .from("fraud_signals")
-    .select("*", { count: "exact", head: true })
+    .select("*, candidates!inner(user_id)", { count: "exact", head: true })
+    .eq("candidates.user_id", user.id)
     .eq("dismissed", false)
     .in("severity", ["high", "critical"]);
 
   const { data: recentCandidates } = await supabase
     .from("candidates")
     .select("*")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(8);
 

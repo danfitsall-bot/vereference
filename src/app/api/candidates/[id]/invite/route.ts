@@ -16,6 +16,7 @@ export async function POST(
     .from("candidates")
     .select("id, status")
     .eq("id", id)
+    .eq("user_id", user.id)
     .single();
 
   if (error || !candidate) {

@@ -19,6 +19,7 @@ export default async function CandidateDetailPage({
     .from("candidates")
     .select("*")
     .eq("id", id)
+    .eq("user_id", user.id)
     .single();
 
   if (!candidate) notFound();
@@ -27,12 +28,14 @@ export default async function CandidateDetailPage({
     .from("referees")
     .select("*")
     .eq("candidate_id", id)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: true });
 
   const { data: fraudSignals } = await supabase
     .from("fraud_signals")
-    .select("*")
+    .select("*, candidates!inner(user_id)")
     .eq("candidate_id", id)
+    .eq("candidates.user_id", user.id)
     .eq("dismissed", false)
     .order("created_at", { ascending: false });
 

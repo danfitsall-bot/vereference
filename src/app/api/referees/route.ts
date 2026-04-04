@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
   const candidateId = request.nextUrl.searchParams.get("candidateId");
 
-  let query = supabase.from("referees").select("*").order("created_at", { ascending: true });
+  let query = supabase.from("referees").select("*").eq("user_id", user.id).order("created_at", { ascending: true });
 
   if (candidateId) {
     query = query.eq("candidate_id", candidateId);

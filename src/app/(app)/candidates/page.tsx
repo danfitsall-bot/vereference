@@ -12,6 +12,7 @@ export default async function CandidatesPage() {
   const { data: candidates } = await supabase
     .from("candidates")
     .select("*")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   return (
