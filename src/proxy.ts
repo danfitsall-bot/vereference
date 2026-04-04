@@ -40,8 +40,6 @@ export async function proxy(request: NextRequest) {
     "/api/ref/",
     "/api/references/",
     "/api/voice/",
-    "/api/email/",
-    "/api/fraud/",
     "/api/webhook/",
   ];
   const isPublicPath = publicPaths.some((path) =>

@@ -11,6 +11,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing token or referees" }, { status: 400 });
   }
 
+  if (referees.length > 5) {
+    return NextResponse.json({ error: "Maximum 5 referees allowed" }, { status: 400 });
+  }
+
+  // Validate each referee's fields
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  for (const ref of referees) {
+    if (!ref.full_name || !ref.email || !ref.relationship || !ref.company) {
+      return NextResponse.json({ error: "Each referee must have full_name, email, relationship, and company" }, { status: 400 });
+    }
+    if (!emailRegex.test(ref.email)) {
+      return NextResponse.json({ error: `Invalid email format: ${ref.email}` }, { status: 400 });
+    }
+    // Trim and limit string lengths
+    ref.full_name = String(ref.full_name).trim().slice(0, 200);
+    ref.email = String(ref.email).trim().slice(0, 200);
+    ref.company = String(ref.company).trim().slice(0, 200);
+    if (ref.job_title) ref.job_title = String(ref.job_title).trim().slice(0, 200);
+    if (ref.phone) ref.phone = String(ref.phone).trim().slice(0, 50);
+  }
+
   // Validate token
   const { data: candidate, error: candidateError } = await supabase
     .from("candidates")
@@ -68,7 +89,7 @@ export async function POST(request: Request) {
     try {
       await fetch(`${appUrl}/api/email/send-referee-request`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_API_SECRET || "" },
         body: JSON.stringify({ refereeId: referee.id }),
       });
     } catch {

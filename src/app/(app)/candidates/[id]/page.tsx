@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Mail, Phone, Building, AlertTriangle } from "lucide-react";
 import { CANDIDATE_STATUSES, REFEREE_STATUSES, FRAUD_SEVERITY_COLORS } from "@/lib/constants";
+import { SendInviteButton } from "@/components/send-invite-button";
 
 export default async function CandidateDetailPage({
   params,
@@ -70,14 +71,7 @@ export default async function CandidateDetailPage({
           </div>
         </div>
         {candidate.status === "pending" && (
-          <form action={`/api/candidates/${id}/invite`} method="POST">
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
-            >
-              Send Invite Email
-            </button>
-          </form>
+          <SendInviteButton candidateId={id} />
         )}
       </div>
 

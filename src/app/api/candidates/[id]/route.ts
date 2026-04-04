@@ -30,9 +30,26 @@ export async function PATCH(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
+  const allowed = {
+    full_name: body.full_name,
+    email: body.email,
+    phone: body.phone,
+    position_applied: body.position_applied,
+    department: body.department,
+    status: body.status,
+  };
+  // Remove undefined values
+  const updates = Object.fromEntries(
+    Object.entries(allowed).filter(([_, v]) => v !== undefined)
+  );
+
+  if (Object.keys(updates).length === 0) {
+    return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
+  }
+
   const { data, error } = await supabase
     .from("candidates")
-    .update(body)
+    .update(updates)
     .eq("id", id)
     .select()
     .single();

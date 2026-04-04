@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     await fetch(`${appUrl}/api/email/send-candidate-invite`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_API_SECRET || "" },
       body: JSON.stringify({ candidateId: candidate.id }),
     });
   } catch {

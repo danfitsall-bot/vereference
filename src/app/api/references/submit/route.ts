@@ -23,6 +23,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid or expired token" }, { status: 403 });
   }
 
+  if (referee.status === 'completed') {
+    return NextResponse.json({ error: "Reference already submitted" }, { status: 400 });
+  }
+
   // Capture IP and user agent for fraud detection
   const headersList = await headers();
   const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -66,7 +70,7 @@ export async function POST(request: Request) {
   try {
     await fetch(`${appUrl}/api/fraud/analyze`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_API_SECRET || "" },
       body: JSON.stringify({
         candidateId: referee.candidate_id,
         refereeId: referee.id

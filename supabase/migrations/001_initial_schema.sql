@@ -27,8 +27,8 @@ CREATE POLICY "Users insert own profile" ON profiles FOR INSERT WITH CHECK (auth
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name)
-  VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name');
+  INSERT INTO public.profiles (id, full_name, company_name)
+  VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'company_name');
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
@@ -120,7 +120,8 @@ CREATE TABLE responses (
 
 ALTER TABLE responses ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Recruiters read own responses" ON responses FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Service role inserts responses" ON responses FOR INSERT WITH CHECK (true);
+-- Responses inserted via service role client only (no permissive policy needed)
+-- RLS is enabled but service role bypasses it
 
 CREATE INDEX idx_responses_referee_id ON responses(referee_id);
 
@@ -148,7 +149,8 @@ CREATE TABLE voice_sessions (
 
 ALTER TABLE voice_sessions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Recruiters read own voice sessions" ON voice_sessions FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Service role manages voice sessions" ON voice_sessions FOR ALL WITH CHECK (true);
+-- Voice sessions managed via service role client only (no permissive policy needed)
+-- RLS is enabled but service role bypasses it
 
 CREATE INDEX idx_voice_sessions_referee_id ON voice_sessions(referee_id);
 
@@ -172,7 +174,8 @@ CREATE TABLE fraud_signals (
 ALTER TABLE fraud_signals ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Recruiters read own fraud signals" ON fraud_signals FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Recruiters dismiss own fraud signals" ON fraud_signals FOR UPDATE USING (auth.uid() = user_id);
-CREATE POLICY "Service role inserts fraud signals" ON fraud_signals FOR INSERT WITH CHECK (true);
+-- Fraud signals inserted via service role client only (no permissive policy needed)
+-- RLS is enabled but service role bypasses it
 
 CREATE INDEX idx_fraud_signals_candidate_id ON fraud_signals(candidate_id);
 
