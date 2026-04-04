@@ -142,8 +142,8 @@ export async function analyzeFraud(candidateId: string, refereeId?: string) {
     return { success: false, error: "Candidate not found", signals: 0 };
   }
 
-  const query = supabase.from("referees").select("*").eq("candidate_id", candidateId);
-  if (refereeId) query.eq("id", refereeId);
+  let query = supabase.from("referees").select("*").eq("candidate_id", candidateId);
+  if (refereeId) query = query.eq("id", refereeId);
   const { data: referees } = await query;
 
   if (!referees) return { success: true, signals: 0 };

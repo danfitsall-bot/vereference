@@ -36,6 +36,7 @@ export async function proxy(request: NextRequest) {
   // Public routes that don't require auth
   const publicPaths = [
     "/login",
+    "/auth/",
     "/ref/",
     "/api/ref/",
     "/api/references/",

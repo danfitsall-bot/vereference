@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Mail, Phone, Building, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Building, AlertTriangle, Calendar } from "lucide-react";
 import { CANDIDATE_STATUSES, REFEREE_STATUSES, FRAUD_SEVERITY_COLORS } from "@/lib/constants";
 import { SendInviteButton } from "@/components/send-invite-button";
 
@@ -45,6 +45,8 @@ export default async function CandidateDetailPage({
     : { data: [] as any[] };
 
   const statusConfig = CANDIDATE_STATUSES[candidate.status as keyof typeof CANDIDATE_STATUSES] || CANDIDATE_STATUSES.pending;
+  const completedReferees = (referees || []).filter((r: any) => r.status === "completed").length;
+  const totalReferees = (referees || []).length;
 
   return (
     <div className="p-8 max-w-4xl">
@@ -60,23 +62,50 @@ export default async function CandidateDetailPage({
             {candidate.full_name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-2xl font-bold text-white">{candidate.full_name}</h1>
               <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${statusConfig.color}`}>
                 {statusConfig.label}
               </span>
             </div>
             <p className="text-white/40 text-sm mt-0.5">{candidate.position_applied}</p>
-            <div className="flex items-center gap-4 mt-1.5 text-xs text-white/30">
+            <div className="flex items-center gap-4 mt-1.5 text-xs text-white/30 flex-wrap">
               <span className="flex items-center gap-1"><Mail className="h-3 w-3" /> {candidate.email}</span>
               {candidate.phone && <span className="flex items-center gap-1"><Phone className="h-3 w-3" /> {candidate.phone}</span>}
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                Added {new Date(candidate.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+              </span>
             </div>
           </div>
         </div>
-        {candidate.status === "pending" && (
+        {(candidate.status === "pending") && (
           <SendInviteButton candidateId={id} />
         )}
       </div>
+
+      {/* Progress summary when referees exist */}
+      {totalReferees > 0 && (
+        <div className="rounded-xl border border-white/8 p-5 mb-6 flex items-center gap-6" style={{ background: "var(--card)" }}>
+          <div>
+            <p className="text-xs text-white/40 mb-1">References Received</p>
+            <p className="text-2xl font-bold text-white">{completedReferees}<span className="text-sm text-white/30 font-normal">/{totalReferees}</span></p>
+          </div>
+          <div className="flex-1">
+            <div className="h-2 w-full bg-white/8 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary rounded-full transition-all"
+                style={{ width: totalReferees > 0 ? `${(completedReferees / totalReferees) * 100}%` : "0%" }}
+              />
+            </div>
+            <p className="text-xs text-white/30 mt-1.5">
+              {completedReferees === totalReferees && totalReferees > 0
+                ? "All references complete"
+                : `${totalReferees - completedReferees} pending`}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Fraud Alerts */}
       {fraudSignals && fraudSignals.length > 0 && (
@@ -113,16 +142,25 @@ export default async function CandidateDetailPage({
                 <div key={referee.id} className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <p className="text-sm font-semibold text-white">{referee.full_name}</p>
-                      <p className="text-xs text-white/40 mt-0.5">
-                        {referee.relationship} at {referee.company}
-                        {referee.job_title && ` · ${referee.job_title}`}
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="text-sm font-semibold text-white">{referee.full_name}</p>
+                        {referee.job_title && (
+                          <span className="text-xs text-white/30">&middot; {referee.job_title}</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-white/40 mt-0.5 capitalize">
+                        {referee.relationship.replace("_", " ")} at {referee.company}
                       </p>
-                      <div className="flex items-center gap-4 mt-1.5 text-xs text-white/30">
+                      <div className="flex items-center gap-4 mt-1.5 text-xs text-white/25 flex-wrap">
                         <span className="flex items-center gap-1"><Mail className="h-3 w-3" /> {referee.email}</span>
                         {referee.phone && <span className="flex items-center gap-1"><Phone className="h-3 w-3" /> {referee.phone}</span>}
                         <span className="flex items-center gap-1"><Building className="h-3 w-3" /> {referee.company}</span>
                       </div>
+                      {referee.email_sent_at && (
+                        <p className="text-xs text-white/20 mt-1">
+                          Email sent {new Date(referee.email_sent_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                        </p>
+                      )}
                     </div>
                     <span className={`text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 ${refStatus.color}`}>
                       {refStatus.label}
@@ -133,17 +171,18 @@ export default async function CandidateDetailPage({
                     <div className="mt-4 space-y-4 pt-4 border-t border-white/6">
                       {refereeResponses.map((response) => (
                         <div key={response.id}>
-                          <p className="text-xs font-medium text-white/40 mb-1">{response.question_text}</p>
+                          <p className="text-xs font-medium text-white/40 mb-1.5">{response.question_text}</p>
                           {response.answer_rating ? (
                             <div className="flex items-center gap-0.5">
                               {[1, 2, 3, 4, 5].map((star) => (
-                                <span key={star} className={`text-base ${star <= response.answer_rating ? "text-primary" : "text-white/15"}`}>
+                                <span key={star} className={`text-base leading-none ${star <= response.answer_rating ? "text-primary" : "text-white/15"}`}>
                                   ★
                                 </span>
                               ))}
+                              <span className="text-xs text-white/30 ml-2">{response.answer_rating}/5</span>
                             </div>
                           ) : (
-                            <p className="text-sm text-white/70">{response.answer_text || "—"}</p>
+                            <p className="text-sm text-white/70 leading-relaxed">{response.answer_text || "—"}</p>
                           )}
                         </div>
                       ))}
@@ -162,7 +201,7 @@ export default async function CandidateDetailPage({
           <div className="py-12 text-center">
             <p className="text-sm text-white/30">
               {candidate.status === "pending" || candidate.status === "invited"
-                ? "Waiting for candidate to submit referee details."
+                ? "Waiting for candidate to submit their referee details."
                 : "No referees found."}
             </p>
           </div>
