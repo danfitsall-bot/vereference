@@ -50,6 +50,8 @@ export const FRAUD_SEVERITY_COLORS = {
   critical: "bg-red-500/20 text-red-300",
 } as const;
 
+// TODO v2: Replace hardcoded questions with DB queries from the questions_template table.
+// The questions_template table is seeded and ready; custom per-user questions will read from it.
 export const DEFAULT_QUESTIONS = [
   {
     key: "relationship",

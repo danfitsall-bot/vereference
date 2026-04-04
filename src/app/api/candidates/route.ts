@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { sendCandidateInvite } from "@/lib/internal-actions";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -19,6 +20,17 @@ export async function POST(request: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Credit/quota enforcement
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("credits_remaining, plan")
+    .eq("id", user.id)
+    .single();
+
+  if (profile && profile.credits_remaining !== null && profile.credits_remaining <= 0) {
+    return NextResponse.json({ error: "No credits remaining" }, { status: 403 });
+  }
 
   const body = await request.json();
   const { full_name, email, position_applied, phone, department } = body;
@@ -42,14 +54,17 @@ export async function POST(request: Request) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Send invite email
+  // Decrement credits after successful creation
+  if (profile && profile.credits_remaining !== null) {
+    await supabase
+      .from("profiles")
+      .update({ credits_remaining: profile.credits_remaining - 1 })
+      .eq("id", user.id);
+  }
+
+  // Send invite email (direct call, no HTTP round-trip)
   try {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    await fetch(`${appUrl}/api/email/send-candidate-invite`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_API_SECRET || "" },
-      body: JSON.stringify({ candidateId: candidate.id }),
-    });
+    await sendCandidateInvite(candidate.id);
   } catch {
     // Email sending failure shouldn't block candidate creation
   }

@@ -1,8 +1,19 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { analyzeFraud } from "@/lib/internal-actions";
+import { rateLimit } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 export async function POST(request: Request) {
+  // Rate limit on public endpoint
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+             headersList.get("x-real-ip") || "unknown";
+
+  if (!rateLimit(ip)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const supabase = createAdminClient();
   const body = await request.json();
   const { token, answers } = body;
@@ -27,11 +38,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Reference already submitted" }, { status: 400 });
   }
 
-  // Capture IP and user agent for fraud detection
-  const headersList = await headers();
-  const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-             headersList.get("x-real-ip") ||
-             "unknown";
   const userAgent = headersList.get("user-agent") || "unknown";
 
   // Save responses
@@ -65,17 +71,9 @@ export async function POST(request: Request) {
     })
     .eq("id", referee.id);
 
-  // Trigger fraud analysis
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  // Trigger fraud analysis (direct call, no HTTP round-trip)
   try {
-    await fetch(`${appUrl}/api/fraud/analyze`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_API_SECRET || "" },
-      body: JSON.stringify({
-        candidateId: referee.candidate_id,
-        refereeId: referee.id
-      }),
-    });
+    await analyzeFraud(referee.candidate_id, referee.id);
   } catch {
     // Non-blocking
   }

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { sendCandidateInvite } from "@/lib/internal-actions";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -25,24 +26,11 @@ export async function POST(
     return NextResponse.json({ error: "Candidate has already been invited" }, { status: 400 });
   }
 
-  // Send invite email via internal route
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  try {
-    const res = await fetch(`${appUrl}/api/email/send-candidate-invite`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-internal-secret": process.env.INTERNAL_API_SECRET || "",
-      },
-      body: JSON.stringify({ candidateId: id }),
-    });
+  // Send invite email (direct call, no HTTP round-trip)
+  const result = await sendCandidateInvite(id);
 
-    if (!res.ok) {
-      const data = await res.json();
-      return NextResponse.json({ error: data.error || "Failed to send invite" }, { status: 500 });
-    }
-  } catch {
-    return NextResponse.json({ error: "Failed to send invite email" }, { status: 500 });
+  if (!result.success) {
+    return NextResponse.json({ error: result.error || "Failed to send invite" }, { status: 500 });
   }
 
   return NextResponse.json({ success: true });

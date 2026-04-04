@@ -330,6 +330,24 @@ export type Database = {
   };
 };
 
+// Types for Supabase joined queries
+export type CandidateWithProfile = Candidate & {
+  profiles: { full_name: string | null; company_name: string | null };
+};
+
+export type RefereeWithCandidate = Referee & {
+  candidates: { full_name: string; position_applied: string };
+};
+
+export type RefereeWithCandidateAndProfile = Referee & {
+  candidates: {
+    full_name: string;
+    position_applied: string;
+    user_id: string;
+    profiles: { full_name: string | null; company_name: string | null };
+  };
+};
+
 // Convenience types
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type Candidate = Database["public"]["Tables"]["candidates"]["Row"];

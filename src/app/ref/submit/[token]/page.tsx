@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { RefereeQuestionnaireForm } from "./questionnaire-form";
+import type { RefereeWithCandidate } from "@/lib/types";
 
 export default async function RefereeSubmitPage({
   params,
@@ -38,7 +39,8 @@ export default async function RefereeSubmitPage({
     );
   }
 
-  const candidate = (referee as any).candidates;
+  const typedReferee = referee as unknown as RefereeWithCandidate;
+  const candidate = typedReferee.candidates;
 
   return (
     <RefereeQuestionnaireForm

@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { VoiceClient } from "./voice-client";
+import type { RefereeWithCandidate } from "@/lib/types";
+import Link from "next/link";
 
 export default async function VoiceSessionPage({
   params,
@@ -38,29 +39,27 @@ export default async function VoiceSessionPage({
     );
   }
 
-  const candidate = (referee as any).candidates;
+  const typedReferee = referee as unknown as RefereeWithCandidate;
+  const candidate = typedReferee.candidates;
+
+  const formUrl = `/ref/submit/${token}`;
 
   return (
-    <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">Voice Reference</h2>
-        <p className="text-muted-foreground mt-1">
-          Hi {referee.full_name}, you'll have a brief conversation with our AI assistant about your experience working with{" "}
-          <strong>{candidate.full_name}</strong> ({candidate.position_applied}).
-        </p>
-        <p className="text-sm text-muted-foreground mt-2">
-          The conversation typically takes 5-10 minutes. Your browser will ask for microphone access.
-        </p>
-      </div>
-
-      <VoiceClient
-        token={token}
-        refereeName={referee.full_name}
-        candidateName={candidate.full_name}
-        positionApplied={candidate.position_applied}
-        relationship={referee.relationship}
-        company={referee.company}
-      />
+    <div className="text-center py-12">
+      <h2 className="text-2xl font-bold mb-4">Voice References Coming Soon</h2>
+      <p className="text-muted-foreground mb-2">
+        Hi {referee.full_name}, voice references for{" "}
+        <strong>{candidate.full_name}</strong> ({candidate.position_applied}) are not yet available.
+      </p>
+      <p className="text-muted-foreground mb-6">
+        Please use the written form instead. It typically takes 5-10 minutes.
+      </p>
+      <Link
+        href={formUrl}
+        className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium hover:opacity-90 transition-opacity"
+      >
+        Complete Written Form
+      </Link>
     </div>
   );
 }

@@ -1,8 +1,19 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendRefereeRequest } from "@/lib/internal-actions";
+import { rateLimit } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 export async function POST(request: Request) {
+  // Rate limit on public endpoint
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+             headersList.get("x-real-ip") || "unknown";
+
+  if (!rateLimit(ip)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const supabase = createAdminClient();
   const body = await request.json();
   const { token, referees } = body;
@@ -44,10 +55,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid or expired token" }, { status: 403 });
   }
 
-  // Capture IP and user agent
-  const headersList = await headers();
-  const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-             headersList.get("x-real-ip") || null;
   const userAgent = headersList.get("user-agent") || null;
 
   // Update candidate with consent and metadata
@@ -63,7 +70,7 @@ export async function POST(request: Request) {
     .eq("id", candidate.id);
 
   // Insert referees
-  const refereeInserts = referees.map((ref: any) => ({
+  const refereeInserts = referees.map((ref: { full_name: string; email: string; phone?: string; relationship: string; company: string; job_title?: string }) => ({
     candidate_id: candidate.id,
     user_id: candidate.user_id,
     full_name: ref.full_name,
@@ -83,15 +90,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Failed to save referees" }, { status: 500 });
   }
 
-  // Send email to each referee
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  // Send email to each referee (direct call, no HTTP round-trip)
   for (const referee of insertedReferees || []) {
     try {
-      await fetch(`${appUrl}/api/email/send-referee-request`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-internal-secret": process.env.INTERNAL_API_SECRET || "" },
-        body: JSON.stringify({ refereeId: referee.id }),
-      });
+      await sendRefereeRequest(referee.id);
     } catch {
       // Continue with other referees if one email fails
     }
