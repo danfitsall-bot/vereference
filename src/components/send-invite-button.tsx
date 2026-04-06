@@ -55,7 +55,7 @@ export function SendInviteButton({ candidateId }: { candidateId: string }) {
         <Send className="h-3.5 w-3.5" />
         {loading ? "Sending..." : "Send Invite Email"}
       </button>
-      {error && <p className="text-xs text-red-400 mt-2 max-w-[200px]">{error}</p>}
+      {error && <p className="text-xs text-red-500 mt-2 max-w-[200px]">{error}</p>}
     </div>
   );
 }

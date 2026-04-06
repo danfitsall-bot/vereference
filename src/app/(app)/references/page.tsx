@@ -22,51 +22,51 @@ export default async function ReferencesPage() {
     <div className="p-8 max-w-5xl">
       <div className="flex items-start justify-between mb-10">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">References</h1>
-          <p className="text-white/40 text-sm mt-0.5">All reference checks across candidates</p>
+          <h1 className="text-2xl font-bold text-[#0F1B2D] tracking-tight">References</h1>
+          <p className="text-gray-500 text-sm mt-0.5">All reference checks across candidates</p>
         </div>
         {referees && referees.length > 0 && (
           <div className="flex items-center gap-3">
-            <div className="text-center px-4 py-2 rounded-lg border border-white/8" style={{ background: "var(--card)" }}>
-              <p className="text-lg font-bold text-primary">{completedCount}</p>
-              <p className="text-xs text-white/40">Completed</p>
+            <div className="text-center px-4 py-2 rounded-lg border border-gray-200 bg-white shadow-sm">
+              <p className="text-lg font-bold text-[#0A6E6E]">{completedCount}</p>
+              <p className="text-xs text-gray-400">Completed</p>
             </div>
-            <div className="text-center px-4 py-2 rounded-lg border border-white/8" style={{ background: "var(--card)" }}>
-              <p className="text-lg font-bold text-yellow-400">{pendingCount}</p>
-              <p className="text-xs text-white/40">Pending</p>
+            <div className="text-center px-4 py-2 rounded-lg border border-gray-200 bg-white shadow-sm">
+              <p className="text-lg font-bold text-amber-500">{pendingCount}</p>
+              <p className="text-xs text-gray-400">Pending</p>
             </div>
           </div>
         )}
       </div>
 
       {referees && referees.length > 0 ? (
-        <div className="rounded-xl border border-white/8 overflow-hidden" style={{ background: "var(--card)" }}>
-          <div className="grid grid-cols-[1fr_160px_120px] gap-4 px-6 py-3 border-b border-white/6">
-            <span className="text-xs font-medium text-white/30 uppercase tracking-wider">Referee</span>
-            <span className="text-xs font-medium text-white/30 uppercase tracking-wider">For Candidate</span>
-            <span className="text-xs font-medium text-white/30 uppercase tracking-wider">Status</span>
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+          <div className="grid grid-cols-[1fr_160px_120px] gap-4 px-6 py-3 border-b border-gray-100 bg-gray-50">
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Referee</span>
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">For Candidate</span>
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Status</span>
           </div>
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-gray-50">
             {referees.map((referee: any) => {
               const statusConfig = REFEREE_STATUSES[referee.status as keyof typeof REFEREE_STATUSES] || REFEREE_STATUSES.pending;
               return (
                 <Link
                   key={referee.id}
                   href={`/candidates/${referee.candidate_id}`}
-                  className="grid grid-cols-[1fr_160px_120px] gap-4 items-center px-6 py-4 hover:bg-white/3 transition-colors group"
+                  className="grid grid-cols-[1fr_160px_120px] gap-4 items-center px-6 py-4 hover:bg-gray-50 transition-colors group"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-white/8 flex items-center justify-center text-sm font-semibold text-white/70 flex-shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-500 flex-shrink-0">
                       {referee.full_name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-white group-hover:text-primary transition-colors truncate">{referee.full_name}</p>
-                      <p className="text-xs text-white/40 truncate">{referee.relationship} &middot; {referee.company}</p>
+                      <p className="text-sm font-medium text-[#0F1B2D] group-hover:text-[#0A6E6E] transition-colors truncate">{referee.full_name}</p>
+                      <p className="text-xs text-gray-400 truncate">{referee.relationship} &middot; {referee.company}</p>
                     </div>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm text-white/60 truncate">{referee.candidates?.full_name}</p>
-                    <p className="text-xs text-white/30 truncate">{referee.candidates?.position_applied}</p>
+                    <p className="text-sm text-gray-600 truncate">{referee.candidates?.full_name}</p>
+                    <p className="text-xs text-gray-400 truncate">{referee.candidates?.position_applied}</p>
                   </div>
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium w-fit ${statusConfig.color}`}>
                     {statusConfig.label}
@@ -77,12 +77,12 @@ export default async function ReferencesPage() {
           </div>
         </div>
       ) : (
-        <div className="rounded-xl border border-white/8 flex flex-col items-center justify-center py-20" style={{ background: "var(--card)" }}>
-          <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
-            <FileText className="h-5 w-5 text-white/25" />
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm flex flex-col items-center justify-center py-20">
+          <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
+            <FileText className="h-5 w-5 text-gray-300" />
           </div>
-          <p className="text-sm text-white/40 mb-2">No references yet</p>
-          <p className="text-xs text-white/25">Add candidates to begin collecting references.</p>
+          <p className="text-sm text-gray-400 mb-2">No references yet</p>
+          <p className="text-xs text-gray-300">Add candidates to begin collecting references.</p>
         </div>
       )}
     </div>

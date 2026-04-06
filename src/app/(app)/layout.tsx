@@ -8,11 +8,11 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen bg-background">
+    <div className="min-h-screen bg-[#F7F5F2]">
       <Sidebar />
-      <main className="flex-1 overflow-auto bg-background">
+      <div className="pl-60 min-h-screen flex flex-col">
         {children}
-      </main>
+      </div>
     </div>
   );
 }

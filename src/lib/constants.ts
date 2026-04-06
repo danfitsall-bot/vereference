@@ -17,23 +17,23 @@ export const FREE_EMAIL_DOMAINS = [
 ];
 
 export const CANDIDATE_STATUSES = {
-  pending: { label: "Pending", color: "bg-yellow-400/15 text-yellow-400" },
-  invited: { label: "Invited", color: "bg-blue-400/15 text-blue-400" },
-  submitted: { label: "Submitted", color: "bg-purple-400/15 text-purple-400" },
-  completed: { label: "Completed", color: "bg-primary/15 text-primary" },
-  expired: { label: "Expired", color: "bg-white/10 text-white/40" },
+  pending: { label: "Pending", color: "bg-amber-50 text-amber-700" },
+  invited: { label: "Invited", color: "bg-blue-50 text-blue-700" },
+  submitted: { label: "Submitted", color: "bg-purple-50 text-purple-700" },
+  completed: { label: "Completed", color: "bg-teal-50 text-teal-700" },
+  expired: { label: "Expired", color: "bg-gray-100 text-gray-500" },
 } as const;
 
 export const REFEREE_STATUSES = {
-  pending: { label: "Pending", color: "bg-yellow-400/15 text-yellow-400" },
-  email_sent: { label: "Email Sent", color: "bg-blue-400/15 text-blue-400" },
+  pending: { label: "Pending", color: "bg-amber-50 text-amber-700" },
+  email_sent: { label: "Email Sent", color: "bg-blue-50 text-blue-700" },
   in_progress: {
     label: "In Progress",
-    color: "bg-purple-400/15 text-purple-400",
+    color: "bg-purple-50 text-purple-700",
   },
-  completed: { label: "Completed", color: "bg-primary/15 text-primary" },
-  declined: { label: "Declined", color: "bg-red-400/15 text-red-400" },
-  expired: { label: "Expired", color: "bg-white/10 text-white/40" },
+  completed: { label: "Completed", color: "bg-teal-50 text-teal-700" },
+  declined: { label: "Declined", color: "bg-red-50 text-red-600" },
+  expired: { label: "Expired", color: "bg-gray-100 text-gray-500" },
 } as const;
 
 export const FRAUD_SEVERITY_WEIGHTS = {
@@ -44,10 +44,10 @@ export const FRAUD_SEVERITY_WEIGHTS = {
 } as const;
 
 export const FRAUD_SEVERITY_COLORS = {
-  low: "bg-yellow-400/15 text-yellow-400",
-  medium: "bg-orange-400/15 text-orange-400",
-  high: "bg-red-400/15 text-red-400",
-  critical: "bg-red-500/20 text-red-300",
+  low: "bg-amber-50 text-amber-700",
+  medium: "bg-orange-50 text-orange-700",
+  high: "bg-red-50 text-red-600",
+  critical: "bg-red-100 text-red-700",
 } as const;
 
 // TODO v2: Replace hardcoded questions with DB queries from the questions_template table.
