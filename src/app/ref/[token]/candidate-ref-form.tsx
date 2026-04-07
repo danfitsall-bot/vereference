@@ -128,10 +128,10 @@ export function CandidateRefForm({
 
       <div className="space-y-4">
         {referees.map((referee, index) => (
-          <div key={index} className="rounded-xl border border-white/8 p-6" style={{ background: "var(--card)" }}>
+          <div key={index} className="rounded-xl border border-border p-6 bg-white shadow-sm">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-full bg-white/8 flex items-center justify-center text-xs font-bold text-white/60">
+                <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
                   {index + 1}
                 </div>
                 <span className="text-sm font-semibold text-foreground">Referee {index + 1}</span>
@@ -140,7 +140,7 @@ export function CandidateRefForm({
                 <button
                   type="button"
                   onClick={() => removeReferee(index)}
-                  className="text-white/25 hover:text-red-400 transition-colors p-1 rounded"
+                  className="text-muted-foreground hover:text-red-500 transition-colors p-1 rounded"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -148,67 +148,67 @@ export function CandidateRefForm({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs text-white/50">Full Name *</Label>
+                <Label className="text-xs text-muted-foreground">Full Name *</Label>
                 <Input
                   placeholder="Jane Smith"
                   value={referee.full_name}
                   onChange={(e) => updateReferee(index, "full_name", e.target.value)}
                   required
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-primary/50 h-9"
+                  className="h-9"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-white/50">Email *</Label>
+                <Label className="text-xs text-muted-foreground">Email *</Label>
                 <Input
                   type="email"
                   placeholder="jane@company.com"
                   value={referee.email}
                   onChange={(e) => updateReferee(index, "email", e.target.value)}
                   required
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-primary/50 h-9"
+                  className="h-9"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-white/50">Company *</Label>
+                <Label className="text-xs text-muted-foreground">Company *</Label>
                 <Input
                   placeholder="Acme Inc."
                   value={referee.company}
                   onChange={(e) => updateReferee(index, "company", e.target.value)}
                   required
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-primary/50 h-9"
+                  className="h-9"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-white/50">Relationship *</Label>
+                <Label className="text-xs text-muted-foreground">Relationship *</Label>
                 <select
-                  className="flex h-9 w-full rounded-md border border-white/10 bg-white/5 px-3 py-1 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
                   value={referee.relationship}
                   onChange={(e) => updateReferee(index, "relationship", e.target.value)}
                   required
                 >
-                  <option value="manager" className="bg-neutral-900">Manager</option>
-                  <option value="colleague" className="bg-neutral-900">Colleague</option>
-                  <option value="direct_report" className="bg-neutral-900">Direct Report</option>
-                  <option value="other" className="bg-neutral-900">Other</option>
+                  <option value="manager">Manager</option>
+                  <option value="colleague">Colleague</option>
+                  <option value="direct_report">Direct Report</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-white/50">Job Title <span className="text-white/25">(optional)</span></Label>
+                <Label className="text-xs text-muted-foreground">Job Title <span className="text-muted-foreground/50">(optional)</span></Label>
                 <Input
                   placeholder="Engineering Manager"
                   value={referee.job_title}
                   onChange={(e) => updateReferee(index, "job_title", e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-primary/50 h-9"
+                  className="h-9"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-white/50">Phone <span className="text-white/25">(optional)</span></Label>
+                <Label className="text-xs text-muted-foreground">Phone <span className="text-muted-foreground/50">(optional)</span></Label>
                 <Input
                   type="tel"
                   placeholder="+44 7700 900000"
                   value={referee.phone}
                   onChange={(e) => updateReferee(index, "phone", e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-primary/50 h-9"
+                  className="h-9"
                 />
               </div>
             </div>
@@ -220,14 +220,14 @@ export function CandidateRefForm({
         <button
           type="button"
           onClick={addReferee}
-          className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-white/15 text-sm text-white/40 hover:text-white/70 hover:border-white/25 transition-colors"
+          className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-border text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
         >
           <Plus className="h-4 w-4" />
           Add Another Referee
         </button>
       )}
 
-      <div className="mt-6 p-4 rounded-xl border border-white/8 bg-white/3">
+      <div className="mt-6 p-4 rounded-xl border border-border bg-muted/30">
         <label className="flex items-start gap-3 cursor-pointer">
           <div className="relative mt-0.5 flex-shrink-0">
             <input
@@ -236,7 +236,7 @@ export function CandidateRefForm({
               onChange={(e) => setConsent(e.target.checked)}
               className="sr-only peer"
             />
-            <div className="w-4 h-4 rounded border border-white/20 bg-white/5 peer-checked:bg-primary peer-checked:border-primary transition-colors flex items-center justify-center">
+            <div className="w-4 h-4 rounded border border-border bg-background peer-checked:bg-primary peer-checked:border-primary transition-colors flex items-center justify-center">
               {consent && (
                 <svg className="w-2.5 h-2.5 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -244,7 +244,7 @@ export function CandidateRefForm({
               )}
             </div>
           </div>
-          <span className="text-xs text-white/50 leading-relaxed">
+          <span className="text-xs text-muted-foreground leading-relaxed">
             I consent to VeReference contacting my referees on behalf of the hiring company to
             collect professional reference feedback. I confirm that these are genuine professional
             contacts and that I have their permission to share their details.
