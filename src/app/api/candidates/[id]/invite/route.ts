@@ -31,6 +31,7 @@ export async function POST(
   const result = await sendCandidateInvite(id);
 
   if (!result.success) {
+    console.error("[invite route] failed:", result.error);
     return NextResponse.json({ error: result.error || "Failed to send invite" }, { status: 500 });
   }
 

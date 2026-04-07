@@ -40,7 +40,8 @@ export async function sendCandidateInvite(candidateId: string) {
   });
 
   if (error) {
-    return { success: false, error: "Failed to send email" };
+    console.error("[sendCandidateInvite] Resend error:", JSON.stringify(error));
+    return { success: false, error: `Resend error: ${JSON.stringify(error)}` };
   }
 
   // Log the email
